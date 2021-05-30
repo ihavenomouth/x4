@@ -1,5 +1,5 @@
 # x4
-A draw-on-screen tool for teachers using Linux-
+A draw-on-screen tool for teachers using Linux.
 
 # How to compile
 
@@ -17,6 +17,7 @@ A draw-on-screen tool for teachers using Linux-
 - Better comments
 - Use a Linter
 - Change the predraw color (currently bluish)
+- Allow to change the border size
 - Read configuration from files
 - What about some screenshot?
 - A screnshot in the Readme file

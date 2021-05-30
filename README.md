@@ -5,15 +5,16 @@ A draw-on-screen tool for teachers using Linux-
 
 ## Dependencies
 
-> sudo apt install build-essential libx11-dev
+    sudo apt install build-essential libx11-dev
 
 ## Compile
 
-> gcc x4.c -o x4 -lX11 -lm
+    gcc x4.c -o x4 -lX11 -lm
 
 # TODO
 
 - Cleaner code
+- Better comments
 - Use a Linter
 - Change the predraw color (currently bluish)
 - Read configuration from files

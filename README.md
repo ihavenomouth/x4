@@ -1,5 +1,5 @@
 # x4
-A write-on-screen tool for teachers using Linux
+A draw-on-screen tool for teachers using Linux
 
 
 # How to compile

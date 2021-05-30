@@ -83,7 +83,7 @@ int main() {
 
   XGCValues gcValuesPreDraw;
   gcValuesPreDraw.function = GXxor;
-  gcValuesPreDraw.foreground = 0x0000FF;
+  gcValuesPreDraw.foreground = 0xAACCFF;
   gcPreDraw = XCreateGC(d, w, GCForeground + GCFunction, &gcValuesPreDraw);
 
   XSetLineAttributes(d, gcPreDraw, 5, LineDoubleDash, CapRound, JoinMiter);

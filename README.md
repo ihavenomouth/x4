@@ -1,5 +1,9 @@
 # x4
+
 A draw-on-screen tool for teachers using Linux.
+
+
+![Demo](./img/demo.gif)
 
 # How to compile
 
@@ -10,6 +14,19 @@ A draw-on-screen tool for teachers using Linux.
 ## Compile
 
     gcc x4.c -o x4 -lX11 -lm
+
+# How to use
+
+Create a keyboard shortcut to execute x4 (it depends on your window manager). I use Meta+4 as the shortcut.
+
+Press c or control to draw a rectangle
+Press a or shift to draw an arrow
+Press b to change to color blue
+Press g to change to color green
+Press r to change to color red
+Press y to change to color yellow
+Press w to change to color white
+
 
 # TODO
 
@@ -22,3 +39,4 @@ A draw-on-screen tool for teachers using Linux.
 - What about some screenshot?
 - A screnshot in the Readme file
 - Learn markdown?
+

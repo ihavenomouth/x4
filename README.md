@@ -26,6 +26,7 @@ Press g to change to color green
 Press r to change to color red  
 Press y to change to color yellow  
 Press w to change to color white  
+Press u to undo last drawing  
 
 
 # TODO
@@ -38,7 +39,7 @@ Press w to change to color white
 - [ ] Read configuration from files
 - [ ] Save the drawing to a file
 - [x] A screnshot in the Readme file
-- [ ] Undo feature
+- [x] Undo feature
 
 
 # ¿Cómo compilar?
@@ -64,6 +65,7 @@ Pulsa g para cambiar al color verde
 Pulsa r para cambiar al color rojo  
 Pulsa y para cambiar al color amarillo  
 Pulsa w para cambiar al color blanco  
+Pulsa u para deshacer el último dibujo
 
 
 # TODO: Tareas por hacer
@@ -76,4 +78,4 @@ Pulsa w para cambiar al color blanco
 - [ ] Leer la configuración de un fichero
 - [ ] Permitir guardar el dibujo en un fichero
 - [x] Pantallazo en el fichero README
-- [ ] Añadir la característica de deshacer
+- [x] Añadir la característica de deshacer

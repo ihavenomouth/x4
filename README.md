@@ -30,13 +30,50 @@ Press w to change to color white
 
 # TODO
 
-- Cleaner code
-- Better comments
-- Use a Linter
-- Change the predraw color (currently bluish)
-- Allow to change the border size
-- Read configuration from files
-- What about some screenshot?
-- A screnshot in the Readme file
-- Learn markdown?
+- [ ] Cleaner code
+- [ ] Better comments
+- [ ] Use a Linter
+- [x] Change the predraw color (currently bluish)
+- [ ] Allow to change the border size
+- [ ] Read configuration from files
+- [ ] Save the drawing to a file
+- [x] A screnshot in the Readme file
+- [ ] Undo feature
 
+
+# ¿Cómo compilar?
+
+## Dependencias
+
+    sudo apt install build-essential libx11-dev
+
+## Compilar
+
+    gcc x4.c -o x4 -lX11 -lm
+
+Alternativamente, se puede usar el shell script compile.sh por comodidad.
+
+# Manual de uso
+
+Crea un atajo de teclado en el gestor de ventana que utilices para ejecutar x4. En mi caso utilizo la tecla Meta+4 (Win+4).
+
+Pulsa c o control para dibujar un rectángulo  
+Pulsa a o shift para dibuajr una flecha  
+Pulsa b para cambiar al color azul  
+Pulsa g para cambiar al color verde  
+Pulsa r para cambiar al color rojo  
+Pulsa y para cambiar al color amarillo  
+Pulsa w para cambiar al color blanco  
+
+
+# TODO: Tareas por hacer
+
+- [ ] Código más limpio
+- [ ] Mejores comentarios
+- [ ] Usar un Linter
+- [x] Cambiar el color de predibujado (ahora mismo es azulado)
+- [ ] Permitir cambiar el tamaño del borde
+- [ ] Leer la configuración de un fichero
+- [ ] Permitir guardar el dibujo en un fichero
+- [x] Pantallazo en el fichero README
+- [ ] Añadir la característica de deshacer

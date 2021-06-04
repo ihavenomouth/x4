@@ -2,6 +2,9 @@
 
 ## Versiones
 
+### Versión 1.0.1b - Junio 2021
+- Se mejora la función de deshacer, evitando las rotaciones de Pixmap
+
 ### Versión 1.0.1 - Junio 2021
 - Añadida la función de deshacer (tecla u)
 
@@ -11,7 +14,7 @@
   - Dibujar rectángulos
   - Dibujar flechas
   - Cambiar color
-- Gif animado
+- Gif animado como demo en Github
 - Proyecto subido a Github
 - Fichero README.md
 

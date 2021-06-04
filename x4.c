@@ -70,24 +70,6 @@ void inicializaNivelesDeshacer(Pixmap* fondo, Display* d, Window w, int screen, 
 
 
 
-/**
- * rota el array de fondos, de manera que el fondo que estuviera en la pos 0 pasa a la 1, el 1 a la 2, etc...
- * el 0 es el nivel más actual, el 1 el anterior, etc.
- */
-void rotaNivelDeshacerAlaDer(Pixmap* fondo, Display* d, GC gc, unsigned int ancho, unsigned int alto) {
-  for (int i = MAX_NIVELES_DESHACER - 1;i > 0;i--) {
-    XCopyArea(d, fondo[i - 1], fondo[i], gc, 0, 0, ancho, alto, 0, 0); //el 0 es el fondo actual
-  }
-}
-
-/** 
- * rota el array de fondos, de manera inversa a la anterior
- */
-void rotaNivelDeshacerAlaIzq(Pixmap* fondo, Display* d, GC gc, unsigned int ancho, unsigned int alto) {
-  for (int i = 0;i < MAX_NIVELES_DESHACER - 1;i++) {
-    XCopyArea(d, fondo[i + 1], fondo[i], gc, 0, 0, ancho, alto, 0, 0);
-  }
-}
 
 
 ////////////////////////
@@ -119,8 +101,7 @@ int main() {
 
 
   w = XCreateWindow(d, DefaultRootWindow(d), 200, 100, 400, 300, CopyFromParent,
-    CopyFromParent, CopyFromParent, CopyFromParent,
-    CopyFromParent, CopyFromParent);
+    CopyFromParent, CopyFromParent, CopyFromParent, CopyFromParent, CopyFromParent);
 
   // Cambiamos a pantalla completa
   Atom atoms[2] = { XInternAtom(d, "_NET_WM_STATE_FULLSCREEN", False), None };
@@ -148,7 +129,8 @@ int main() {
   XMapWindow(d, w);
 
   // Preparamos los niveles de deshacer
-  int nivelDeshacerDisponibles = 0;
+  int nivelesDeshacerDisponibles = 0;
+  int indiceNivelDeshacer = 0;
   Pixmap fondo[MAX_NIVELES_DESHACER];
   inicializaNivelesDeshacer(fondo, d, w, screen, ancho, alto);
 
@@ -157,7 +139,8 @@ int main() {
 
   while (True) {
     XNextEvent(d, &e);
-    switch (e.type) {
+
+    switch (e.type){
     case ButtonPress: /* Posición inicial de la herramienta */
       puntos[p].x = e.xbutton.x;
       puntos[p].y = e.xbutton.y;
@@ -172,38 +155,31 @@ int main() {
       case 'c':
         //se borra el predibujado antes de guardar el nivel de deshacer
         if (pointPreDraw.x >= 0 && pointPreDraw.y >= 0) {
-          dibujarRectangulo(d, w, gcPreDraw,
-            puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y);
+          dibujarRectangulo(d, w, gcPreDraw, puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y);
         }
 
-        //rotamos los fondos para dejar espacio al nuevo
-        rotaNivelDeshacerAlaDer(fondo, d, gc, ancho, alto);
-        XCopyArea(d, w, fondo[0], gc, 0, 0, ancho, alto, 0, 0); //guardamos el fondo actual
+        //guardamos el fondo en la posición actual y la incrementamos 
+        XCopyArea(d, w, fondo[indiceNivelDeshacer], gc, 0, 0, ancho, alto, 0, 0); //guardamos el fondo actual
+        
+        indiceNivelDeshacer = (indiceNivelDeshacer >= MAX_NIVELES_DESHACER-1) ? 0 : ++indiceNivelDeshacer;
+        nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles >= MAX_NIVELES_DESHACER) ? MAX_NIVELES_DESHACER : ++nivelesDeshacerDisponibles;
 
-        nivelDeshacerDisponibles++;
-        if (nivelDeshacerDisponibles > MAX_NIVELES_DESHACER)
-          nivelDeshacerDisponibles = MAX_NIVELES_DESHACER;
-
-        dibujarRectangulo(d, w, gc,
-          puntos[0].x, puntos[0].y, puntos[1].x, puntos[1].y);
+        dibujarRectangulo(d, w, gc, puntos[0].x, puntos[0].y, puntos[1].x, puntos[1].y);
         break;
       case 'a':
         //se borra el predibujado antes de guardar el nivel de deshacer
         if (pointPreDraw.x >= 0 && pointPreDraw.y >= 0) {
-          dibujarFlecha(d, w, gcPreDraw,
-            puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y);
+          dibujarFlecha(d, w, gcPreDraw, puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y);
         }
 
-        //rotamos los fondos para dejar espacio al nuevo
-        rotaNivelDeshacerAlaDer(fondo, d, gc, ancho, alto);
-        XCopyArea(d, w, fondo[0], gc, 0, 0, ancho, alto, 0, 0); //guardamos el fondo actual
+        //guardamos el fondo en la posición actual y la incrementamos 
+        XCopyArea(d, w, fondo[indiceNivelDeshacer], gc, 0, 0, ancho, alto, 0, 0); //guardamos el fondo actual
 
-        nivelDeshacerDisponibles++;
-        if (nivelDeshacerDisponibles > MAX_NIVELES_DESHACER)
-          nivelDeshacerDisponibles = MAX_NIVELES_DESHACER;
-          
-        dibujarFlecha(d, w, gc,
-          puntos[0].x, puntos[0].y, puntos[1].x, puntos[1].y);
+        indiceNivelDeshacer = (indiceNivelDeshacer >= MAX_NIVELES_DESHACER - 1) ? 0 : ++indiceNivelDeshacer;
+        nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles >= MAX_NIVELES_DESHACER) ? MAX_NIVELES_DESHACER : ++nivelesDeshacerDisponibles;
+                  
+
+        dibujarFlecha(d, w, gc, puntos[0].x, puntos[0].y, puntos[1].x, puntos[1].y);
         break;
       }
 
@@ -272,14 +248,12 @@ int main() {
         XSetForeground(d, gc, color);
       }
       else if (e.xkey.keycode == 30) { //30 =u
-        if (nivelDeshacerDisponibles > 0) {
-          nivelDeshacerDisponibles = (nivelDeshacerDisponibles < 0) ? 0 : --nivelDeshacerDisponibles;
-
+        if (nivelesDeshacerDisponibles > 0) { //si hay niveles que se pueden deshacer
+          indiceNivelDeshacer = (indiceNivelDeshacer==0 ) ? MAX_NIVELES_DESHACER-1 : --indiceNivelDeshacer;
+          nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles < 0) ? 0 : --nivelesDeshacerDisponibles;
+                  
           //restauramos el fondo guardado
-          XCopyArea(d, fondo[0], w, gc, 0, 0, ancho, alto, 0, 0);
-
-          //perdemos un nivel de deshacer
-          rotaNivelDeshacerAlaIzq(fondo, d, gc, ancho, alto);
+          XCopyArea(d, fondo[indiceNivelDeshacer], w, gc, 0, 0, ancho, alto, 0, 0);
         }
       }
       else {

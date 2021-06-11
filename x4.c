@@ -5,10 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "configuracion.h"
 
 
 #define MAXPOS 2
-#define MAX_NIVELES_DESHACER 5 //TODO: leer este valor de un fichero de configuración
 
 
 /**
@@ -16,10 +16,9 @@
  * x0, y0 : punto que marca la punta de la flecha
  * x1, y1 : punto que marca el final de la flecha
  */
-void dibujarFlecha(Display* d, Window w, GC gc, int x0, int y0, int x1, int y1) {
+void dibujarFlecha(Display* d, Window w, GC gc, int x0, int y0, int x1, int y1, int tamFlecha) {
   XDrawLine(d, w, gc, x0, y0, x1, y1);
 
-  int tamFlecha = 15;  //TODO: leer este valor de un fichero de configuración
   float angulo = M_PI / 4;
   angulo = atan2(y0 - y1, x0 - x1) + M_PI;
   float anguloFlecha = M_PI / 4;
@@ -31,6 +30,7 @@ void dibujarFlecha(Display* d, Window w, GC gc, int x0, int y0, int x1, int y1) 
   XDrawLine(d, w, gc, x0, y0, f_x1, f_y1);
   XDrawLine(d, w, gc, x0, y0, f_x2, f_y2);
 }
+
 
 /**
  * dibuja un rectángulo en la pantalla
@@ -63,12 +63,11 @@ void dibujarRectangulo(Display* d, Window w, GC gc, int x0, int y0, int x1, int 
 /**
  * Inicializa los niveles de deshacer que contendrán "capturas de pantalla" del estado de la misma
  */
-void inicializaNivelesDeshacer(Pixmap* fondo, Display* d, Window w, int screen, unsigned int ancho, unsigned int alto) {
-  for (int i = 0;i < MAX_NIVELES_DESHACER;i++) {
+void inicializaNivelesDeshacer(Pixmap* fondo, Display* d, Window w, int screen, unsigned int ancho, unsigned int alto, int nivelesDeshacer) {
+  for (int i = 0;i < nivelesDeshacer;i++) {
     fondo[i] = XCreatePixmap(d, w, ancho, alto, XDefaultDepth(d, screen));
   }
 }
-
 
 
 
@@ -82,7 +81,6 @@ int main() {
   XEvent e;
   GC gc;
   int screen;
-  int anchoBorde = 5;     //TODO: leer este valor de un fichero de configuración
 
   XPoint puntos[MAXPOS];  // 2 puntos para dibujar un rectángulo
   int p = 0;              // contador de los puntos
@@ -95,6 +93,9 @@ int main() {
   char herramienta = 'c';
   long color = 0xFF3333;  //TODO: leer los valores de los colores de un fichero de configuración
   int numeroDePaso=1;
+
+  config c;
+  leerCofiguracion(&c);
 
   d = XOpenDisplay(NULL);
   screen = XDefaultScreen(d);
@@ -113,13 +114,13 @@ int main() {
   gc = XCreateGC(d, w, 0, NULL);
 
   XSetForeground(d, gc, color);
-  XSetLineAttributes(d, gc, anchoBorde, LineSolid, CapRound, JoinMiter);
+  XSetLineAttributes(d, gc, c.anchoBorde, LineSolid, CapRound, JoinMiter);
 
   XGCValues gcValuesPreDraw;
   gcValuesPreDraw.function = GXxor;
   gcValuesPreDraw.foreground = 0xAACCFF;
   gcPreDraw = XCreateGC(d, w, GCForeground + GCFunction, &gcValuesPreDraw);
-  XSetLineAttributes(d, gcPreDraw, anchoBorde, LineDoubleDash, CapRound, JoinMiter);
+  XSetLineAttributes(d, gcPreDraw, c.anchoBorde, LineDoubleDash, CapRound, JoinMiter);
 
   // Los eventos que vamos a escuchar
   XSelectInput(d, w,
@@ -132,8 +133,8 @@ int main() {
   // Preparamos los niveles de deshacer
   int nivelesDeshacerDisponibles = 0;
   int indiceNivelDeshacer = 0;
-  Pixmap fondo[MAX_NIVELES_DESHACER];
-  inicializaNivelesDeshacer(fondo, d, w, screen, ancho, alto);
+  Pixmap fondo[c.nivelesDeshacer];
+  inicializaNivelesDeshacer(fondo, d, w, screen, ancho, alto, c.nivelesDeshacer);
 
 
 
@@ -162,24 +163,24 @@ int main() {
         //guardamos el fondo en la posición actual y la incrementamos 
         XCopyArea(d, w, fondo[indiceNivelDeshacer], gc, 0, 0, ancho, alto, 0, 0); //guardamos el fondo actual
 
-        indiceNivelDeshacer = (indiceNivelDeshacer >= MAX_NIVELES_DESHACER - 1) ? 0 : ++indiceNivelDeshacer;
-        nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles >= MAX_NIVELES_DESHACER) ? MAX_NIVELES_DESHACER : ++nivelesDeshacerDisponibles;
+        indiceNivelDeshacer = (indiceNivelDeshacer >= c.nivelesDeshacer - 1) ? 0 : ++indiceNivelDeshacer;
+        nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles >= c.nivelesDeshacer) ? c.nivelesDeshacer : ++nivelesDeshacerDisponibles;
 
         dibujarRectangulo(d, w, gc, puntos[0].x, puntos[0].y, puntos[1].x, puntos[1].y);
         break;
       case 'a':
         //se borra el predibujado antes de guardar el nivel de deshacer
         if (pointPreDraw.x >= 0 && pointPreDraw.y >= 0) {
-          dibujarFlecha(d, w, gcPreDraw, puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y);
+          dibujarFlecha(d, w, gcPreDraw, puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y, c.tamFlecha);
         }
 
         //guardamos el fondo en la posición actual y la incrementamos 
         XCopyArea(d, w, fondo[indiceNivelDeshacer], gc, 0, 0, ancho, alto, 0, 0); //guardamos el fondo actual
 
-        indiceNivelDeshacer = (indiceNivelDeshacer >= MAX_NIVELES_DESHACER - 1) ? 0 : ++indiceNivelDeshacer;
-        nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles >= MAX_NIVELES_DESHACER) ? MAX_NIVELES_DESHACER : ++nivelesDeshacerDisponibles;
+        indiceNivelDeshacer = (indiceNivelDeshacer >= c.nivelesDeshacer - 1) ? 0 : ++indiceNivelDeshacer;
+        nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles >= c.nivelesDeshacer) ? c.nivelesDeshacer : ++nivelesDeshacerDisponibles;
 
-        dibujarFlecha(d, w, gc, puntos[0].x, puntos[0].y, puntos[1].x, puntos[1].y);
+        dibujarFlecha(d, w, gc, puntos[0].x, puntos[0].y, puntos[1].x, puntos[1].y, c.tamFlecha);
         break;
       }
 
@@ -198,7 +199,7 @@ int main() {
           break;
         case 'a':
           dibujarFlecha(d, w, gcPreDraw,
-            puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y);
+            puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y, c.tamFlecha);
           break;
         }
       }
@@ -213,7 +214,7 @@ int main() {
         break;
       case 'a':
         dibujarFlecha(d, w, gcPreDraw,
-          puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y);
+          puntos[0].x, puntos[0].y, pointPreDraw.x, pointPreDraw.y, c.tamFlecha);
         break;
       }
       XFlush(d);
@@ -248,9 +249,8 @@ int main() {
         XSetForeground(d, gc, color);
       }
       else if (e.xkey.keycode == 57) {  // 57 =n
-        //XFontStruct * font = XLoadQueryFont(d, "-misc-fixed-medium-r-normal--40-*-*-*-*-*-iso8859-15"); //xlsfont 40=tamaño
-        XFontStruct * font = XLoadQueryFont(d, "-*-*-*-*-*-*-60-*-*-*-*-*-iso8859-*");
-        
+
+        XFontStruct * font = XLoadQueryFont(d, c.fuente);
         XSetFont(d, gc, font->fid);
         
         char numCadena[4];
@@ -264,7 +264,7 @@ int main() {
       }
       else if (e.xkey.keycode == 30) { //30 =u
         if (nivelesDeshacerDisponibles > 0) { //si hay niveles que se pueden deshacer
-          indiceNivelDeshacer = (indiceNivelDeshacer == 0) ? MAX_NIVELES_DESHACER - 1 : --indiceNivelDeshacer;
+          indiceNivelDeshacer = (indiceNivelDeshacer == 0) ? c.nivelesDeshacer - 1 : --indiceNivelDeshacer;
           nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles < 0) ? 0 : --nivelesDeshacerDisponibles;
 
           //restauramos el fondo guardado

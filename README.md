@@ -13,7 +13,7 @@ A draw-on-screen tool for teachers using Linux.
 
 ## Compile
 
-    gcc x4.c -o x4 -lX11 -lm
+    gcc x4.c configuracion.c -o x4 -lX11 -lm
 
 # How to use it
 
@@ -36,8 +36,9 @@ Press n to print step number (it autoincrements itself, limit is 9 steps)
 - [x] Better comments
 - [ ] Use a Linter
 - [x] Change the predraw color (currently bluish)
-- [ ] Allow to change the border size
-- [ ] Read configuration from files
+- [x] Allow to change the border size
+- [x] Read configuration from a file
+- [ ] Read colours from confiuration file
 - [ ] Save the drawing to a file
 - [x] A screnshot in the Readme file
 - [x] Undo feature
@@ -52,7 +53,7 @@ Press n to print step number (it autoincrements itself, limit is 9 steps)
 
 ## Compilar
 
-    gcc x4.c -o x4 -lX11 -lm
+    gcc x4.c configuracion.c -o x4 -lX11 -lm
 
 Alternativamente, se puede usar el shell script compile.sh por comodidad.
 
@@ -77,8 +78,9 @@ Pulsa n para dibujar el número de paso (se autoincrementa, hasta 9 pasos)
 - [x] Mejores comentarios
 - [ ] Usar un Linter
 - [x] Cambiar el color de predibujado (ahora mismo es azulado)
-- [ ] Permitir cambiar el tamaño del borde
-- [ ] Leer la configuración de un fichero
+- [x] Permitir cambiar el tamaño del borde
+- [x] Leer la configuración de un fichero
+- [ ] Leer los colores desde el fichero de configuración
 - [ ] Permitir guardar el dibujo en un fichero
 - [x] Pantallazo en el fichero README
 - [x] Añadir la característica de deshacer

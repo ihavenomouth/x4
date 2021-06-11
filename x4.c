@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 #define MAXPOS 2
 #define MAX_NIVELES_DESHACER 5 //TODO: leer este valor de un fichero de configuración
 
@@ -93,12 +94,12 @@ int main() {
 
   char herramienta = 'c';
   long color = 0xFF3333;  //TODO: leer los valores de los colores de un fichero de configuración
+  int numeroDePaso=1;
 
   d = XOpenDisplay(NULL);
   screen = XDefaultScreen(d);
   unsigned int alto = DisplayHeight(d, screen); //alto y ancho de la pantalla
   unsigned int ancho = DisplayWidth(d, screen);
-
 
   w = XCreateWindow(d, DefaultRootWindow(d), 200, 100, 400, 300, CopyFromParent,
     CopyFromParent, CopyFromParent, CopyFromParent, CopyFromParent, CopyFromParent);
@@ -140,7 +141,7 @@ int main() {
   while (True) {
     XNextEvent(d, &e);
 
-    switch (e.type){
+    switch (e.type) {
     case ButtonPress: /* Posición inicial de la herramienta */
       puntos[p].x = e.xbutton.x;
       puntos[p].y = e.xbutton.y;
@@ -160,8 +161,8 @@ int main() {
 
         //guardamos el fondo en la posición actual y la incrementamos 
         XCopyArea(d, w, fondo[indiceNivelDeshacer], gc, 0, 0, ancho, alto, 0, 0); //guardamos el fondo actual
-        
-        indiceNivelDeshacer = (indiceNivelDeshacer >= MAX_NIVELES_DESHACER-1) ? 0 : ++indiceNivelDeshacer;
+
+        indiceNivelDeshacer = (indiceNivelDeshacer >= MAX_NIVELES_DESHACER - 1) ? 0 : ++indiceNivelDeshacer;
         nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles >= MAX_NIVELES_DESHACER) ? MAX_NIVELES_DESHACER : ++nivelesDeshacerDisponibles;
 
         dibujarRectangulo(d, w, gc, puntos[0].x, puntos[0].y, puntos[1].x, puntos[1].y);
@@ -177,7 +178,6 @@ int main() {
 
         indiceNivelDeshacer = (indiceNivelDeshacer >= MAX_NIVELES_DESHACER - 1) ? 0 : ++indiceNivelDeshacer;
         nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles >= MAX_NIVELES_DESHACER) ? MAX_NIVELES_DESHACER : ++nivelesDeshacerDisponibles;
-                  
 
         dibujarFlecha(d, w, gc, puntos[0].x, puntos[0].y, puntos[1].x, puntos[1].y);
         break;
@@ -247,11 +247,26 @@ int main() {
         color = 0x00FF00;
         XSetForeground(d, gc, color);
       }
+      else if (e.xkey.keycode == 57) {  // 57 =n
+        //XFontStruct * font = XLoadQueryFont(d, "-misc-fixed-medium-r-normal--40-*-*-*-*-*-iso8859-15"); //xlsfont 40=tamaño
+        XFontStruct * font = XLoadQueryFont(d, "-*-*-*-*-*-*-60-*-*-*-*-*-iso8859-*");
+        
+        XSetFont(d, gc, font->fid);
+        
+        char numCadena[4];
+        numCadena[0]='(';
+        numCadena[1]= numeroDePaso +'0';;
+        numCadena[2]=')';
+        numCadena[3]='\0';
+        numeroDePaso++;
+        if(numeroDePaso>=9)numeroDePaso=0;
+        XDrawString (d, w, gc, e.xbutton.x, e.xbutton.y, numCadena, strlen (numCadena));
+      }
       else if (e.xkey.keycode == 30) { //30 =u
         if (nivelesDeshacerDisponibles > 0) { //si hay niveles que se pueden deshacer
-          indiceNivelDeshacer = (indiceNivelDeshacer==0 ) ? MAX_NIVELES_DESHACER-1 : --indiceNivelDeshacer;
+          indiceNivelDeshacer = (indiceNivelDeshacer == 0) ? MAX_NIVELES_DESHACER - 1 : --indiceNivelDeshacer;
           nivelesDeshacerDisponibles = (nivelesDeshacerDisponibles < 0) ? 0 : --nivelesDeshacerDisponibles;
-                  
+
           //restauramos el fondo guardado
           XCopyArea(d, fondo[indiceNivelDeshacer], w, gc, 0, 0, ancho, alto, 0, 0);
         }

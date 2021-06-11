@@ -2,6 +2,9 @@
 
 ## Versiones
 
+### Versión 1.0.2 - Junio 2021
+- Añadida la función de dibujar números que indican "pasos" de un procedimiento
+
 ### Versión 1.0.1b - Junio 2021
 - Se mejora la función de deshacer, evitando las rotaciones de Pixmap
 

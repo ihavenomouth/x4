@@ -27,12 +27,13 @@ Press r to change to color red
 Press y to change to color yellow  
 Press w to change to color white  
 Press u to undo last drawing  
+Press n to print step number (it autoincrements itself, limit is 9 steps)  
 
 
 # TODO
 
-- [ ] Cleaner code
-- [ ] Better comments
+- [x] Cleaner code
+- [x] Better comments
 - [ ] Use a Linter
 - [x] Change the predraw color (currently bluish)
 - [ ] Allow to change the border size
@@ -40,6 +41,7 @@ Press u to undo last drawing
 - [ ] Save the drawing to a file
 - [x] A screnshot in the Readme file
 - [x] Undo feature
+- [ ] Test in other window manager (currently only MATE)
 
 
 # ¿Cómo compilar?
@@ -65,13 +67,14 @@ Pulsa g para cambiar al color verde
 Pulsa r para cambiar al color rojo  
 Pulsa y para cambiar al color amarillo  
 Pulsa w para cambiar al color blanco  
-Pulsa u para deshacer el último dibujo
+Pulsa u para deshacer el último dibujo  
+Pulsa n para dibujar el número de paso (se autoincrementa, hasta 9 pasos)  
 
 
 # TODO: Tareas por hacer
 
-- [ ] Código más limpio
-- [ ] Mejores comentarios
+- [x] Código más limpio
+- [x] Mejores comentarios
 - [ ] Usar un Linter
 - [x] Cambiar el color de predibujado (ahora mismo es azulado)
 - [ ] Permitir cambiar el tamaño del borde
@@ -79,3 +82,4 @@ Pulsa u para deshacer el último dibujo
 - [ ] Permitir guardar el dibujo en un fichero
 - [x] Pantallazo en el fichero README
 - [x] Añadir la característica de deshacer
+- [ ] Probar en otros entornos de escritorio (ahora mismo sólo MATE)

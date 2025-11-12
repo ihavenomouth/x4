@@ -2,6 +2,11 @@
 
 ## Versiones
 
+### Versión 1.1.4 - Noviembre 2025
+- Adaptado a Wayland
+- Se modifican las teclas que se usan (Ctrl y Shift se usan para rectángulos y flechas respectivamente)
+- Los colores se eligen ahora con Ctrol+1, Ctrol+2, etc..
+
 ### Versión 1.0.3 - Junio 2021
 - Añadido un fichero de configuración x4.conf
 - Opción de leer del fichero de configuración los aspectos básicos:
